@@ -31,19 +31,20 @@ function Payment() {
         url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
       });
       setClientSecret(response.data.clientSecret);
+      console.log("The SECRET is ------>>>> ", response.data.clientSecret);
     };
     getClientSecret();
   }, [basket]); // Every time the items in basket changes
 
   const handleSubmit = async (event) => {
     // To handle stripe payments
-    event.preventDefualt();
+    event.preventDefault();
     setProcessing(true);
-
+    const cardElement = elements.getElement(CardElement);
     const payload = await stripe
       .confirmCardPayment(clientSecret, {
         payment_method: {
-          card: elements.getElement(CardElement),
+          card: cardElement,
         },
       })
       .then(({ paymentIntent }) => {
@@ -51,15 +52,14 @@ function Payment() {
         setSucceeded(true);
         setProcessing(false);
         setError(null);
-
-        history.replace("/orders");
+        history.replace("/");
       });
   };
-  const handleChange = (event) => {
+
+  const handleChange = (e) => {
     // To handle card detail changes and handle errors
-    setDisabled(event.empty);
-    setError(event.error ? event.error.message : "");
-    // const payload = await stripe
+    setDisabled(e.empty);
+    setError(e.error ? e.error.message : "");
   };
 
   return (
@@ -99,7 +99,6 @@ function Payment() {
             <h3>Payment Method</h3>
           </div>
           <div className="payment__details">
-            {/* Stripe integration goes here..... */}
             <form onSubmit={handleSubmit}>
               <CardElement onChange={handleChange} />
               <div className="payment__priceContainer">
@@ -115,7 +114,6 @@ function Payment() {
                   <span>{processing ? <p>Processing</p> : "Buy Now"}</span>
                 </button>
               </div>
-              {/* For Error cases */}
               {error && <div>{error}</div>}
             </form>
           </div>

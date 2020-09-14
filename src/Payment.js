@@ -32,7 +32,7 @@ function Payment() {
         url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
       });
       setClientSecret(response.data.clientSecret);
-      console.log("The SECRET is ------>>>> ", response.data.clientSecret);
+      console.log("The SECRET is ------>>>> ", clientSecret);
     };
     getClientSecret();
   }, [basket]); // Every time the items in basket changes
@@ -120,7 +120,7 @@ function Payment() {
               <CardElement onChange={handleChange} />
               <div className="payment__priceContainer">
                 <CurrencyFormat
-                  renderText={(value) => <h3>Order Totoal: {value}</h3>}
+                  renderText={(value) => <h4>Order Total: {value}</h4>}
                   decimalScale={2}
                   value={getBasketTotal(basket)}
                   displayType={"text"}
